@@ -1,4 +1,4 @@
-package simplesmq.domain.ro;
+package simplesmq.domain.dro;
 
 import lombok.Data;
 

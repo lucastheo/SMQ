@@ -10,6 +10,7 @@ import simplesmq.domain.enuns.StatusArquivoEnum;
 import simplesmq.util.FileUtils;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class MensagemPersistenciaDiscoRepository {
@@ -30,8 +31,18 @@ public class MensagemPersistenciaDiscoRepository {
         return FileUtils.remover(caminho);
     }
 
+    public MensagemEntity ler( String identificacao ) throws IOException {
+        String caminho = getCaminhoBase(identificacao);
+        String jsonString = FileUtils.ler(caminho);
+        return objectMapper.readValue(jsonString, MensagemEntity.class);
+    }
+
     private String getCaminhoBase(MensagemEntity mensagemEntity){
-        return LocalDeArquivosConfiguration.MENSAGEM+mensagemEntity.getIdentificacao();
+        return this.getCaminhoBase(mensagemEntity.getIdentificacao());
+    }
+
+    private String getCaminhoBase(String identificacao){
+        return LocalDeArquivosConfiguration.MENSAGEM+identificacao;
     }
 
 }

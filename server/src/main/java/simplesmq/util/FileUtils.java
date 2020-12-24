@@ -2,9 +2,9 @@ package simplesmq.util;
 
 import simplesmq.domain.enuns.StatusArquivoEnum;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.CharBuffer;
+import java.util.Optional;
 
 public class FileUtils {
 
@@ -33,5 +33,21 @@ public class FileUtils {
             return StatusArquivoEnum.REMOVIDO;
         }
         return StatusArquivoEnum.FALHA;
+    }
+
+    public static String ler(String caminho ) throws IOException{
+        File file = new File(caminho);
+
+        char[] buffer = new char[1024];
+        StringBuilder stringBuilder = new StringBuilder();
+        FileReader reader = null;
+
+        reader = new FileReader(file);
+        while(reader.read(buffer)!=-1){
+            stringBuilder.append(buffer);
+        }
+        reader.close();
+        return stringBuilder.toString();
+
     }
 }
