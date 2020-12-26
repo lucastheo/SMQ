@@ -4,7 +4,7 @@ import simplesmq.domain.dto.ElementoConsumoDto;
 import simplesmq.domain.dto.MensagemDto;
 import simplesmq.exception.ValidacaoException;
 
-public class MensagemDtoValidate {
+public class MensagemDtoValidate  {
 
     public static void execute(MensagemDto mensagem ) throws ValidacaoException {
         if( mensagem.getFila() == null ){

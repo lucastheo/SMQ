@@ -48,7 +48,7 @@ public class MensagemCriacaoService {
         }
 
         try{
-            mensagemPersistenciaService.persisteCache(mensagemEntity);
+                mensagemPersistenciaService.persisteCache(mensagemEntity);
         } catch (InterruptedException e) {
             this.reverter(identificacao);
             this.reverterDisco(mensagemEntity);

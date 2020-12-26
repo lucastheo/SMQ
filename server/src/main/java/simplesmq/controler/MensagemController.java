@@ -1,12 +1,11 @@
 package simplesmq.controler;
 
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import simplesmq.domain.dco.ConsumoDco;
+import simplesmq.domain.dco.ReservaDco;
 import simplesmq.domain.dto.ConsutaMensagemDto;
 import simplesmq.domain.dto.IdendificacaoMensagemDto;
 import simplesmq.domain.dto.MensagemDto;
@@ -14,15 +13,16 @@ import simplesmq.exception.NaoEncontradoException;
 import simplesmq.exception.ProcessoException;
 import simplesmq.exception.ValidacaoException;
 import simplesmq.mapping.domain.dco.ConsumoDcoMapping;
+import simplesmq.mapping.domain.dco.ReservaDcoMapping;
 import simplesmq.mapping.domain.ro.ErrorEoMapping;
+import simplesmq.service.ConsumoService;
 import simplesmq.service.MensagemCriacaoService;
 import simplesmq.service.RelacaoCriacaoService;
 import simplesmq.service.ReservaService;
-import simplesmq.service.reserva.ReservaServiceBusca;
 import simplesmq.validate.domain.dco.ConsumoDcoValidate;
+import simplesmq.validate.domain.dco.ReservaDcoValidate;
 import simplesmq.validate.domain.dto.MensagemDtoValidate;
 
-import javax.websocket.server.PathParam;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,6 +36,8 @@ public class MensagemController {
     RelacaoCriacaoService relacaoCriacaoService;
     @Autowired
     ReservaService reservaService;
+    @Autowired
+    ConsumoService consumoService;
 
     @PostMapping("/mensagem")
     public ResponseEntity getMostCited(@RequestBody MensagemDto mensagem){
@@ -75,16 +77,16 @@ public class MensagemController {
 
     @GetMapping("/mensagem")
     public ResponseEntity getMostCited(@RequestParam("fila") String nomeFila , @RequestParam("grupo") String nomeGrupo , @RequestHeader("data-expiracao") Optional<LocalDateTime> dataDaExpiracao ){
-        ConsumoDco consumso = ConsumoDcoMapping.mapFrpm(nomeFila,nomeGrupo,dataDaExpiracao.orElse(null));
+        ReservaDco reserve = ReservaDcoMapping.mapFrpm(nomeFila,nomeGrupo,dataDaExpiracao.orElse(null));
         try{
-            ConsumoDcoValidate.validate(consumso);
+            ReservaDcoValidate.execute(reserve);
         } catch (ValidacaoException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorEoMapping.mapFrom(ex));
         }
 
         ConsutaMensagemDto consultaMensagemDto = null;
         try {
-            consultaMensagemDto = reservaService.execute(consumso) ;
+            consultaMensagemDto = reservaService.execute(reserve) ;
         } catch (NaoEncontradoException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorEoMapping.mapFrom(ex));
         } catch (ProcessoException ex) {
@@ -92,5 +94,23 @@ public class MensagemController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body( consultaMensagemDto );
+    }
+
+    @PostMapping("/mensagem/{identificacao_mensagem}/consumidor/{nome_consumidor}")
+    public ResponseEntity getMostCited(@PathVariable("identificacao_mensagem") String identificacaoMensagem, @PathVariable("nome_consumidor") String nomeGrupo){
+        ConsumoDco consumo = ConsumoDcoMapping.mapFrom(identificacaoMensagem,nomeGrupo);
+        try{
+            ConsumoDcoValidate.execute(consumo);
+        } catch (ValidacaoException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorEoMapping.mapFrom(ex));
+        }
+        try {
+            consumoService.execute(consumo);
+        } catch (NaoEncontradoException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorEoMapping.mapFrom(ex));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+
     }
 }

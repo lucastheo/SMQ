@@ -2,9 +2,10 @@ package simplesmq.util;
 
 import simplesmq.domain.enuns.StatusArquivoEnum;
 
-import java.io.*;
-import java.nio.CharBuffer;
-import java.util.Optional;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class FileUtils {
 
@@ -26,7 +27,7 @@ public class FileUtils {
 
     public static StatusArquivoEnum remover(String caminho ){
         File file = new File(caminho);
-        if( file.exists() ) {
+        if( !file.exists() ) {
             return StatusArquivoEnum.NAO_ENCONTRADO;
         }
         if( file.delete() ){

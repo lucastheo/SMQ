@@ -3,7 +3,6 @@ package simplesmq.service.mensagem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.MensagemEntity;
-import simplesmq.exception.ProcessoException;
 import simplesmq.repository.mensagem.MensagemPersistenciaCacheRepository;
 import simplesmq.repository.mensagem.MensagemPersistenciaDiscoRepository;
 

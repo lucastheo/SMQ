@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import simplesmq.configuration.CacheConfiguration;
 import simplesmq.domain.entity.RelacaoEntity;
 import simplesmq.repository.relacao.RelacaoPersistenciaDiscoRepository;
-import simplesmq.repository.relacao.RelacaoStatusRepository;
 import simplesmq.service.FilaConfiguracaoService;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ public class RelacaoPersistenciaService {
     @Autowired
     RelacaoPersistenciaDiscoRepository relacaoPersistenciaRepository;
     @Autowired
-    RelacaoStatusRepository relacaoPersistenciaCacheRepository;
+    RelacaoPersistenciaService relacaoPersistenciaService;
 
     public void persistenciaEmDisco(String nomeFila , List<RelacaoEntity> relacoes ) throws IOException {
         if( filaConfiguracaoService.persistenciaEmDisco(nomeFila) ){
@@ -28,5 +27,9 @@ public class RelacaoPersistenciaService {
                 relacaoPersistenciaRepository.salvar(relacaoEntity);
             }
         }
+    }
+
+    public void removeEmDisco(RelacaoEntity relacaoEntity){
+        relacaoPersistenciaRepository.remover(relacaoEntity);
     }
 }

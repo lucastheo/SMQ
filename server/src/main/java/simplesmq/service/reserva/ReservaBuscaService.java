@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Component
-public class ReservaServiceBusca {
+public class ReservaBuscaService {
     @Autowired
     MensagemPersistenciaCacheRepository mensagemPersistenciaCacheRepository;
     @Autowired

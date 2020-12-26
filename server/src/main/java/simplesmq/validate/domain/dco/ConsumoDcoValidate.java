@@ -5,12 +5,13 @@ import simplesmq.exception.ValidacaoException;
 
 public class ConsumoDcoValidate {
 
-    public static void validate( ConsumoDco consumo ) throws ValidacaoException {
-        if( consumo.getNomeFila() == null ){
-            throw new ValidacaoException("Nome da fila não pode ser nulo");
+    public static void execute( ConsumoDco consumo ) throws ValidacaoException {
+        if(consumo.getIdentificacaoMensagem() == null ){
+            throw new ValidacaoException("Consumo precisa ter a identificação mesnagem");
         }
-        if( consumo.getNomeGrupo() == null ){
-            throw new ValidacaoException("Grupo de consumo não pode ser vazio");
+        if(consumo.getNomeGrupo() == null ){
+            throw new ValidacaoException("Consumo precisa ter o nome do grupo");
         }
     }
+
 }

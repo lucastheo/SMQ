@@ -10,7 +10,6 @@ import simplesmq.domain.enuns.StatusArquivoEnum;
 import simplesmq.util.FileUtils;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 public class MensagemPersistenciaDiscoRepository {

@@ -2,7 +2,7 @@ package simplesmq.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import simplesmq.domain.dco.ConsumoDco;
+import simplesmq.domain.dco.ReservaDco;
 import simplesmq.domain.dto.ConsutaMensagemDto;
 import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.domain.entity.RelacaoEntity;
@@ -10,7 +10,7 @@ import simplesmq.exception.NaoEncontradoException;
 import simplesmq.exception.ProcessoException;
 import simplesmq.mapping.domain.dto.ConsutaMensagemDtoMapping;
 import simplesmq.service.mensagem.MensagemConsultaService;
-import simplesmq.service.reserva.ReservaServiceBusca;
+import simplesmq.service.reserva.ReservaBuscaService;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -19,14 +19,14 @@ import java.util.Optional;
 public class ReservaService {
 
     @Autowired
-    ReservaServiceBusca reservaServiceBusca;
+    ReservaBuscaService reservaServiceBusca;
 
     @Autowired
     MensagemConsultaService mensagemConsultaService;
 
-    public ConsutaMensagemDto execute(ConsumoDco consumo ) throws NaoEncontradoException, ProcessoException {
+    public ConsutaMensagemDto execute(ReservaDco reserve ) throws NaoEncontradoException, ProcessoException {
 
-        Optional<RelacaoEntity> optionalRelacaoEntity = reservaServiceBusca.procura(consumo.getNomeFila(),consumo.getNomeGrupo());
+        Optional<RelacaoEntity> optionalRelacaoEntity = reservaServiceBusca.procura(reserve.getNomeFila(),reserve.getNomeGrupo());
         if( optionalRelacaoEntity.isEmpty() ){
             throw new NaoEncontradoException("Não foi encontrado registro para essa fila e grupo");
         }
@@ -41,5 +41,4 @@ public class ReservaService {
 
         return ConsutaMensagemDtoMapping.mapFrom(relacaoEntity, mensagemEntity);
     }
-
 }
