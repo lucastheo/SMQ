@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import simplesmq.configuration.LocalDeArquivosConfiguration;
+import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.domain.entity.RelacaoEntity;
 import simplesmq.domain.enuns.StatusArquivoEnum;
 import simplesmq.util.FileUtils;
@@ -29,7 +30,17 @@ public class RelacaoPersistenciaDiscoRepository {
         return FileUtils.remover(caminho);
     }
 
+    public RelacaoEntity ler(String identificacao ) throws IOException {
+        String caminho = getCaminhoBase(identificacao);
+        String jsonString = FileUtils.ler(caminho);
+        return objectMapper.readValue(jsonString, RelacaoEntity.class);
+    }
+
+    private String getCaminhoBase(String identificacao ){
+        return LocalDeArquivosConfiguration.RELACAO+identificacao;
+    }
+
     private String getCaminhoBase(RelacaoEntity relacaoEntity){
-        return LocalDeArquivosConfiguration.RELACAO+relacaoEntity.getIdentificacao();
+        return getCaminhoBase(relacaoEntity.getIdentificacao());
     }
 }

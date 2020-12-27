@@ -32,7 +32,12 @@ public class RelacaoStatusRepository {
 
     public void addRelacao(String nomeFila , String consumidor , RelacaoEntity relacaoEntity ){
         novo.get(nomeFila).get(consumidor).add(relacaoEntity);
-        controleQuantidadeElementos.putIfAbsent(relacaoEntity.getIdentificacaoMensagem(),new AtomicInteger(0)).addAndGet(1);
+        if( controleQuantidadeElementos.containsKey(relacaoEntity.getIdentificacaoMensagem()) ){
+            controleQuantidadeElementos.get(relacaoEntity.getIdentificacaoMensagem()).addAndGet(1);
+        }else{
+            controleQuantidadeElementos.put(relacaoEntity.getIdentificacaoMensagem(),new AtomicInteger(1));
+        }
+
     }
 
     public Optional<RelacaoEntity> reserve(String nomeFila , String consumidor ){
