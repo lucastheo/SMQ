@@ -24,15 +24,18 @@ public class CarregaDadosService {
     MensagemPersistenciaDiscoRepository mensagemPersistenciaDiscoRepository;
     RelacaoPersistenciaDiscoRepository relacaoPersistenciaDiscoRepository;
     RelacaoStatusRepository relacaoStatusRepository;
+    FilaConfiguracaoService filaConfiguracaoService;
 
     public CarregaDadosService(MensagemIdentidificacaoRepository mensagemIdentidificacaoRepository,
                                MensagemPersistenciaDiscoRepository mensagemPersistenciaDiscoRepository,
                                RelacaoPersistenciaDiscoRepository relacaoPersistenciaDiscoRepository,
-                               RelacaoStatusRepository relacaoStatusRepository){
+                               RelacaoStatusRepository relacaoStatusRepository,
+                               FilaConfiguracaoService filaConfiguracaoService){
         this.mensagemIdentidificacaoRepository = mensagemIdentidificacaoRepository;
         this.mensagemPersistenciaDiscoRepository = mensagemPersistenciaDiscoRepository;
         this.relacaoPersistenciaDiscoRepository = relacaoPersistenciaDiscoRepository;
         this.relacaoStatusRepository = relacaoStatusRepository;
+        this.filaConfiguracaoService = filaConfiguracaoService;
         this.execute();
     }
 

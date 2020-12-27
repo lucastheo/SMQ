@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class CacheConfiguration {
-    Integer sizeCacheMensagem = 1000;
+    Integer sizeCacheMensagem = 10;
 
-    Integer sizeCacheRelacao = 1000;
+    Integer tamanhoMaximoDaBuscaPelaCache = 10000;
 }

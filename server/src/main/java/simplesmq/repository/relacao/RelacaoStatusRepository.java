@@ -40,6 +40,13 @@ public class RelacaoStatusRepository {
 
     }
 
+    public int quantidadeDeElementosParaProcessar(String nomeFila , String consumidor ){
+        if( novo.containsKey(nomeFila) && novo.get(nomeFila).containsKey(consumidor)) {
+            return novo.get(nomeFila).get(consumidor).size();
+        }
+        return 0;
+    }
+
     public Optional<RelacaoEntity> reserve(String nomeFila , String consumidor ){
         if( novo.containsKey(nomeFila) && novo.get(nomeFila).containsKey(consumidor)){
             RelacaoEntity relacaoEntity = novo.get(nomeFila).get(consumidor).poll();
@@ -88,6 +95,7 @@ public class RelacaoStatusRepository {
         RelacaoEntity relacaoEntity = finalizado.poll();
         if( controleQuantidadeElementos.get(relacaoEntity.getIdentificacaoMensagem()).addAndGet(-1) == 0) {
             controleQuantidadeJaZerados.add(relacaoEntity.getIdentificacaoMensagem());
+            controleQuantidadeElementos.remove(relacaoEntity.getIdentificacao());
         };
         return Optional.of(relacaoEntity);
     }

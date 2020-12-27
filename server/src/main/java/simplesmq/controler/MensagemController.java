@@ -51,11 +51,13 @@ public class MensagemController {
         try {
              identificacao= mensagemCriacaoService.geraIdentificacao(mensagem);
         } catch (ProcessoException ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorEoMapping.mapFrom(ex));
         }
         try{
             mensagemCriacaoService.execute(identificacao, mensagem);
         }catch (ProcessoException ex){
+            ex.printStackTrace();
             mensagemCriacaoService.reverter(identificacao);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorEoMapping.mapFrom(ex));
         }
@@ -63,10 +65,12 @@ public class MensagemController {
         try {
             relacaoCriacaoService.execute(identificacao,mensagem);
         } catch (ProcessoException ex) {
+            ex.printStackTrace();
             mensagemCriacaoService.reverter(identificacao);
             try {
                 mensagemCriacaoService.reverter(identificacao,mensagem);
             } catch (ProcessoException processoException) {
+                ex.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorEoMapping.mapFrom(ex));
             }
         }
@@ -81,6 +85,7 @@ public class MensagemController {
         try{
             ReservaDcoValidate.execute(reserve);
         } catch (ValidacaoException ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorEoMapping.mapFrom(ex));
         }
 
@@ -88,8 +93,10 @@ public class MensagemController {
         try {
             consultaMensagemDto = reservaService.execute(reserve) ;
         } catch (NaoEncontradoException ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorEoMapping.mapFrom(ex));
         } catch (ProcessoException ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorEoMapping.mapFrom(ex));
         }
 
@@ -102,11 +109,13 @@ public class MensagemController {
         try{
             ConsumoDcoValidate.execute(consumo);
         } catch (ValidacaoException ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorEoMapping.mapFrom(ex));
         }
         try {
             consumoService.execute(consumo);
         } catch (NaoEncontradoException ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorEoMapping.mapFrom(ex));
         }
 
