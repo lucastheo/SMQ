@@ -19,14 +19,13 @@ public class MensagemPersistenciaCacheRepository {
             return StatusElementoEmAgrupamentoEnum.ENCONTADO;
         }
         try {
-            semaphoreAddInList.acquire();
+             semaphoreAddInList.acquire();
             cacheMensagem.put(mensagemEntity.getIdentificacao(), mensagemEntity);
             if(!findCache.containsKey(mensagemEntity.getNomeFila())){
                 findCache.put(mensagemEntity.getNomeFila(), new LinkedHashSet<String>());    
             }
             findCache.get(mensagemEntity.getNomeFila()).add(mensagemEntity.getIdentificacao());
         } catch (InterruptedException e) {
-            semaphoreAddInList.release();
             throw e;
         } finally {
             semaphoreAddInList.release();
@@ -38,7 +37,6 @@ public class MensagemPersistenciaCacheRepository {
         try {
             semaphoreAddInList.acquire();
             if( !cacheMensagem.containsKey(mensagemEntity.getIdentificacao()) ){
-                semaphoreAddInList.release();
                 return StatusElementoEmAgrupamentoEnum.NAO_ENCONTRADO;
             }
             cacheMensagem.remove(mensagemEntity.getIdentificacao());
@@ -48,7 +46,6 @@ public class MensagemPersistenciaCacheRepository {
             }
 
         } catch (InterruptedException e) {
-            semaphoreAddInList.release();
             throw e;
         }finally {
             semaphoreAddInList.release();

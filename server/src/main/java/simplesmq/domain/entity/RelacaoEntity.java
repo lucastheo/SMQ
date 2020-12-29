@@ -10,4 +10,5 @@ public class RelacaoEntity {
 
     String identificacao;
 
+    String nomeFila;
 }

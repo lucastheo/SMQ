@@ -17,6 +17,7 @@ public class RelacaoEntityMapping {
             relacaoEntity.setNome( elemento.getNome() );
             relacaoEntity.setIdentificacaoMensagem(identificacaoMensagem.toString());
             relacaoEntity.setIdentificacao(identificacaoMensagem.toString()+elemento.getNome());
+            relacaoEntity.setNomeFila(mensagemDto.getFila().getNome());
             lista.add(relacaoEntity);
         }
         return lista;

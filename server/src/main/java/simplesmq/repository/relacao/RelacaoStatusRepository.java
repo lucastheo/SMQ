@@ -95,8 +95,9 @@ public class RelacaoStatusRepository {
         RelacaoEntity relacaoEntity = finalizado.poll();
         if( controleQuantidadeElementos.get(relacaoEntity.getIdentificacaoMensagem()).addAndGet(-1) == 0) {
             controleQuantidadeJaZerados.add(relacaoEntity.getIdentificacaoMensagem());
-            controleQuantidadeElementos.remove(relacaoEntity.getIdentificacao());
+            controleQuantidadeElementos.remove(relacaoEntity.getIdentificacaoMensagem());
         };
+        limpaNovo(relacaoEntity);
         return Optional.of(relacaoEntity);
     }
 
@@ -105,9 +106,18 @@ public class RelacaoStatusRepository {
         if(identificacaoMensagem == null ){
             return Optional.empty();
         }
-        controleQuantidadeElementos.remove(identificacaoMensagem);
         return Optional.of(identificacaoMensagem);
     }
 
-
+    private void limpaNovo( RelacaoEntity relacaoEntity ){
+        if( !novo.containsKey(relacaoEntity.getNomeFila()) || !novo.get(relacaoEntity.getNomeFila()).containsKey(relacaoEntity.getNome()) ){
+            return;
+        }
+        if( novo.get(relacaoEntity.getNomeFila()).get(relacaoEntity.getNome()).size() == 0 ) {
+            novo.get(relacaoEntity.getNomeFila()).remove(relacaoEntity.getNome());
+            if (novo.get(relacaoEntity.getNomeFila()).size() == 0) {
+                novo.remove(relacaoEntity.getNomeFila());
+            }
+        }
+    }
 }
