@@ -2,15 +2,13 @@ package simplesmq.mapping.domain.dco;
 
 import simplesmq.domain.dco.ReservaDco;
 
-import java.time.LocalDateTime;
-
 public class ReservaDcoMapping {
 
-    public static ReservaDco mapFrpm(String nomeFila , String nomeGrupo , LocalDateTime dataDaExpiração ){
+    public static ReservaDco mapFrpm(String nomeFila , String nomeGrupo , Long tempoConsumo ){
         ReservaDco consumo = new ReservaDco();
         consumo.setNomeFila(nomeFila);
         consumo.setNomeGrupo(nomeGrupo);
-        consumo.setDataDaExpiração(dataDaExpiração);
+        consumo.setTempoConsumo(tempoConsumo);
         return consumo;
     }
 }

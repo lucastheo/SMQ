@@ -6,8 +6,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.repository.mensagem.MensagemIdentidificacaoRepository;
-import simplesmq.repository.mensagem.MensagemPersistenciaCacheRepository;
-import simplesmq.repository.mensagem.MensagemPersistenciaDiscoRepository;
 import simplesmq.repository.relacao.RelacaoStatusRepository;
 
 import java.io.IOException;
@@ -24,9 +22,8 @@ public class MensagemConsumidaService {
     MensagemConsultaService mensagemConsultaService;
 
     @Autowired
-    MensagemPersistenciaCacheRepository mensagemPersistenciaCacheRepository;
-    @Autowired
-    MensagemPersistenciaDiscoRepository mensagemPersistenciaDiscoRepository;
+    MensagemPersistenciaService mensagemPersistenciaService;
+
     @Autowired
     MensagemIdentidificacaoRepository mensagemIdentidificacaoRepository;
 
@@ -41,8 +38,8 @@ public class MensagemConsumidaService {
             if(optionalIdentificaoMensagem.isPresent()){
                 try {
                     MensagemEntity mensagemEntity =mensagemConsultaService.por(optionalIdentificaoMensagem.get());
-                    mensagemPersistenciaCacheRepository.remover(mensagemEntity);
-                    mensagemPersistenciaDiscoRepository.remover(mensagemEntity);
+                    mensagemPersistenciaService.removeCache(mensagemEntity);
+                    mensagemPersistenciaService.remove(mensagemEntity);
                     mensagemIdentidificacaoRepository.remove(UUID.fromString(mensagemEntity.getIdentificacao()));
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();

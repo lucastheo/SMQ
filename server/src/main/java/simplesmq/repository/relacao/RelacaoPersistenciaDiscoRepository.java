@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import simplesmq.configuration.LocalDeArquivosConfiguration;
-import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.domain.entity.RelacaoEntity;
 import simplesmq.domain.enuns.StatusArquivoEnum;
 import simplesmq.util.FileUtils;

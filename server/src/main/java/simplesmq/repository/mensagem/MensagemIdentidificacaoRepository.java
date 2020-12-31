@@ -3,9 +3,7 @@ package simplesmq.repository.mensagem;
 import org.springframework.stereotype.Component;
 import simplesmq.domain.enuns.StatusElementoEmAgrupamentoEnum;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 @Component
@@ -48,7 +46,7 @@ public class MensagemIdentidificacaoRepository {
         return StatusElementoEmAgrupamentoEnum.REMOVIDO;
     }
 
-
-
-
+    public List<UUID> todosUUIDs(){
+        return new LinkedList<UUID>(listaIdMensagem);
+    }
 }

@@ -1,13 +1,10 @@
 package simplesmq.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import simplesmq.configuration.LocalDeArquivosConfiguration;
 import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.domain.entity.RelacaoEntity;
-import simplesmq.exception.ProcessoException;
 import simplesmq.repository.mensagem.MensagemIdentidificacaoRepository;
-import simplesmq.repository.mensagem.MensagemPersistenciaCacheRepository;
 import simplesmq.repository.mensagem.MensagemPersistenciaDiscoRepository;
 import simplesmq.repository.relacao.RelacaoPersistenciaDiscoRepository;
 import simplesmq.repository.relacao.RelacaoStatusRepository;

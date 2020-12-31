@@ -12,7 +12,7 @@ public class MensagemEntityMapping {
         mensagemEntity.setIdentificacao(identificacao.toString());
         mensagemEntity.setMensagem(mensagemDto.getMensagem());
         mensagemEntity.setNomeFila(mensagemDto.getFila().getNome());
-        mensagemEntity.setDataDaExpiracao(mensagemDto.getDataDaExpiração() == null ? null : mensagemDto.getDataDaExpiração().toString());
+        mensagemEntity.setTempoMaximoConsumo(mensagemDto.getDataExpiração());
         return mensagemEntity;
     }
 }

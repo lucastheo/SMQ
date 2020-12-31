@@ -11,6 +11,7 @@ import simplesmq.exception.ProcessoException;
 import simplesmq.mapping.domain.dto.ConsutaMensagemDtoMapping;
 import simplesmq.service.mensagem.MensagemConsultaService;
 import simplesmq.service.reserva.ReservaBuscaService;
+import simplesmq.service.reserva.ReservaTempoConsumoService;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -20,9 +21,10 @@ public class ReservaService {
 
     @Autowired
     ReservaBuscaService reservaServiceBusca;
-
     @Autowired
     MensagemConsultaService mensagemConsultaService;
+    @Autowired
+    ReservaTempoConsumoService relacaoTempoConsumoService;
 
     public ConsutaMensagemDto execute(ReservaDco reserve ) throws NaoEncontradoException, ProcessoException {
 
@@ -38,6 +40,8 @@ public class ReservaService {
         } catch (IOException e) {
             throw new ProcessoException("Falha em ler o arquivo da mensagem");
         }
+
+        relacaoTempoConsumoService.add(relacaoEntity,reserve.getTempoConsumo());
 
         return ConsutaMensagemDtoMapping.mapFrom(relacaoEntity, mensagemEntity);
     }

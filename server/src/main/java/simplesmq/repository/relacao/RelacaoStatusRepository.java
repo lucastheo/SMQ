@@ -1,6 +1,7 @@
 package simplesmq.repository.relacao;
 
 import org.springframework.stereotype.Component;
+import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.domain.entity.RelacaoEntity;
 
 import java.util.Optional;
@@ -37,7 +38,6 @@ public class RelacaoStatusRepository {
         }else{
             controleQuantidadeElementos.put(relacaoEntity.getIdentificacaoMensagem(),new AtomicInteger(1));
         }
-
     }
 
     public int quantidadeDeElementosParaProcessar(String nomeFila , String consumidor ){
@@ -45,6 +45,16 @@ public class RelacaoStatusRepository {
             return novo.get(nomeFila).get(consumidor).size();
         }
         return 0;
+    }
+
+    public Boolean voltaParaNovo(RelacaoEntity relacaoEntity ){
+        if( processamento.containsKey(relacaoEntity.getNome() ) ){
+            if( processamento.get(relacaoEntity.getNome()).remove(relacaoEntity) ){
+                this.addRelacao(relacaoEntity.getNomeFila(),relacaoEntity.getNome(),relacaoEntity);
+                return true;
+            }
+        }
+        return false;
     }
 
     public Optional<RelacaoEntity> reserve(String nomeFila , String consumidor ){
@@ -117,6 +127,26 @@ public class RelacaoStatusRepository {
             novo.get(relacaoEntity.getNomeFila()).remove(relacaoEntity.getNome());
             if (novo.get(relacaoEntity.getNomeFila()).size() == 0) {
                 novo.remove(relacaoEntity.getNomeFila());
+            }
+        }
+    }
+
+    public void removeTodasOcorrencias(MensagemEntity mensagemEntity){
+        for(String nomeConsumo : novo.getOrDefault(mensagemEntity.getNomeFila(), new ConcurrentHashMap<>()).keySet()){
+            for( RelacaoEntity relacaoEntity : novo.get(mensagemEntity.getNomeFila()).get(nomeConsumo)){
+                if(relacaoEntity.getIdentificacaoMensagem().equals( mensagemEntity.getIdentificacao())) {
+                    finalizado.add(relacaoEntity);
+                    novo.get(mensagemEntity.getNomeFila()).get(nomeConsumo).remove(relacaoEntity);
+                }
+            }
+        }
+
+        for( String nomeConsumo : processamento.keySet() ){
+            for(RelacaoEntity relacaoEntity : processamento.get(nomeConsumo)){
+                if(relacaoEntity.getIdentificacaoMensagem().equals( mensagemEntity.getIdentificacao())){
+                    finalizado.add(relacaoEntity);
+                    processamento.get(nomeConsumo).remove(relacaoEntity);
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import simplesmq.domain.enuns.StatusElementoEmAgrupamentoEnum;
 import simplesmq.repository.mensagem.MensagemIdentidificacaoRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -23,7 +24,10 @@ public class MensagemIdentidificacaoService {
 
     public void remove( UUID uuid) throws InterruptedException {
         mensagemIdentidificacaoRepository.remove(uuid);
+    }
 
+    public List<UUID> listaIdentificacaoMensagens(){
+        return mensagemIdentidificacaoRepository.todosUUIDs();
     }
 
 }

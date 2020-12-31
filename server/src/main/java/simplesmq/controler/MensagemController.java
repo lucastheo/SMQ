@@ -23,7 +23,6 @@ import simplesmq.validate.domain.dco.ConsumoDcoValidate;
 import simplesmq.validate.domain.dco.ReservaDcoValidate;
 import simplesmq.validate.domain.dto.MensagemDtoValidate;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -80,8 +79,8 @@ public class MensagemController {
     }
 
     @GetMapping("/mensagem")
-    public ResponseEntity getMostCited(@RequestParam("fila") String nomeFila , @RequestParam("grupo") String nomeGrupo , @RequestHeader("data-expiracao") Optional<LocalDateTime> dataDaExpiracao ){
-        ReservaDco reserve = ReservaDcoMapping.mapFrpm(nomeFila,nomeGrupo,dataDaExpiracao.orElse(null));
+    public ResponseEntity getMostCited(@RequestParam("fila") String nomeFila , @RequestParam("grupo") String nomeGrupo , @RequestHeader("data-expiracao") Optional<Long> optionalTempoConsumo  ){
+        ReservaDco reserve = ReservaDcoMapping.mapFrpm(nomeFila,nomeGrupo,optionalTempoConsumo.orElse(5L));
         try{
             ReservaDcoValidate.execute(reserve);
         } catch (ValidacaoException ex) {

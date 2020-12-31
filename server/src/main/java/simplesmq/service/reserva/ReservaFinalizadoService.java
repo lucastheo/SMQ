@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.domain.entity.RelacaoEntity;
 import simplesmq.domain.enuns.StatusElementoEmAgrupamentoEnum;
 import simplesmq.repository.relacao.RelacaoStatusRepository;
@@ -30,6 +31,10 @@ public class ReservaFinalizadoService {
             return StatusElementoEmAgrupamentoEnum.NAO_ENCONTRADO;
         }
         return StatusElementoEmAgrupamentoEnum.REMOVIDO;
+    }
+
+    public void finalizaTudo(MensagemEntity mensagemEntity ){
+        relacaoStatusRepository.removeTodasOcorrencias( mensagemEntity);
     }
 
     @Scheduled(fixedDelay = 5000)

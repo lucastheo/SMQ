@@ -2,6 +2,8 @@ package simplesmq.domain.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class MensagemEntity {
 
@@ -12,5 +14,7 @@ public class MensagemEntity {
     String dataDaExpiracao;
 
     String identificacao;
+
+    LocalDateTime tempoMaximoConsumo;
 
 }

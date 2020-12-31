@@ -12,7 +12,7 @@ import java.util.List;
 public class MensagemDto {
     FilaDto fila;
 
-    LocalDateTime dataDaExpiração;
+    LocalDateTime dataExpiração;
 
     List<ElementoConsumoDto> consumidores;
 
