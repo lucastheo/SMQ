@@ -4,9 +4,7 @@ import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.RelacaoEntity;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -24,8 +22,11 @@ public class RelacaoTempoConsumoRepository {
     }
 
     public List<RelacaoEntity> desempilha(LocalDateTime busca ){
-        List<RelacaoEntity> relacaoEstouro = new LinkedList();
-        for(LocalDateTime localDateTime : relacaoTempoConsumo.keySet() ) {
+        List<RelacaoEntity> relacaoEstouro = new LinkedList<>();
+        lock.lock();
+        Set<LocalDateTime> relacaoTempoConsumoCache = new HashSet<>(relacaoTempoConsumo.keySet());
+        lock.unlock();
+        for(LocalDateTime localDateTime : relacaoTempoConsumoCache ) {
             if( busca.isAfter(localDateTime)){
                 lock.lock();
                 relacaoEstouro.addAll(relacaoTempoConsumo.get(localDateTime));

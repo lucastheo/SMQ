@@ -5,8 +5,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.MensagemEntity;
-import simplesmq.repository.mensagem.MensagemIdentidificacaoRepository;
-import simplesmq.repository.relacao.RelacaoStatusRepository;
+import simplesmq.service.relacao.RelacaoStatusService;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,7 +16,7 @@ import java.util.UUID;
 public class MensagemConsumidaService {
 
     @Autowired
-    RelacaoStatusRepository relacaoStatusRepository;
+    RelacaoStatusService relacaoStatusService;
     @Autowired
     MensagemConsultaService mensagemConsultaService;
 
@@ -25,7 +24,7 @@ public class MensagemConsumidaService {
     MensagemPersistenciaService mensagemPersistenciaService;
 
     @Autowired
-    MensagemIdentidificacaoRepository mensagemIdentidificacaoRepository;
+    MensagemIdentidificacaoService mensagemIdentidificacaoService;
 
     /*
     * As mensagem que são consumidas são as que não contem mais relação
@@ -34,13 +33,13 @@ public class MensagemConsumidaService {
     void mensagensConsumidas(){
         Optional<String> optionalIdentificaoMensagem = Optional.empty();
         do {
-            optionalIdentificaoMensagem = relacaoStatusRepository.limpaRelacaoZerada();
+            optionalIdentificaoMensagem = relacaoStatusService.limpaRelacaoZerada();
             if(optionalIdentificaoMensagem.isPresent()){
                 try {
                     MensagemEntity mensagemEntity =mensagemConsultaService.por(optionalIdentificaoMensagem.get());
                     mensagemPersistenciaService.removeCache(mensagemEntity);
                     mensagemPersistenciaService.remove(mensagemEntity);
-                    mensagemIdentidificacaoRepository.remove(UUID.fromString(mensagemEntity.getIdentificacao()));
+                    mensagemIdentidificacaoService.remove(UUID.fromString(mensagemEntity.getIdentificacao()));
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }

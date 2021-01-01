@@ -1,4 +1,4 @@
-package simplesmq.service;
+package simplesmq.service.configuracaoservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

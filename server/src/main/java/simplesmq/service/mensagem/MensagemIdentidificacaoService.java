@@ -30,4 +30,7 @@ public class MensagemIdentidificacaoService {
         return mensagemIdentidificacaoRepository.todosUUIDs();
     }
 
+    public void add(UUID fromString) throws InterruptedException {
+        mensagemIdentidificacaoRepository.add(fromString);
+    }
 }

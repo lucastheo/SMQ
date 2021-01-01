@@ -14,14 +14,12 @@ public class MensagemIdentidificacaoRepository {
 
     public StatusElementoEmAgrupamentoEnum add(UUID uuid ) throws InterruptedException {
         try {
-            semaphoreAddInList.acquire();
             if( listaIdMensagem.contains(uuid) ){
-                semaphoreAddInList.release();
                 return StatusElementoEmAgrupamentoEnum.ENCONTADO;
             }
+            semaphoreAddInList.acquire();
             listaIdMensagem.add(uuid);
         } catch (InterruptedException e) {
-            semaphoreAddInList.release();
             throw e;
         }finally {
             semaphoreAddInList.release();

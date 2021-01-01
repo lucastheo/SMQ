@@ -53,8 +53,8 @@ public class MensagemPersistenciaCacheRepository {
         return StatusElementoEmAgrupamentoEnum.REMOVIDO;
     }
 
-    public Set<String> chaveMensagem(String nomeFila){
-        return findCache.getOrDefault(nomeFila, new LinkedHashSet<>());
+    public Set<String> mensagensEmCache(String nomeFila){
+        return new HashSet<String>(findCache.getOrDefault(nomeFila, new LinkedHashSet<>()));
     }
 
     public Integer quantidadeElemento(){

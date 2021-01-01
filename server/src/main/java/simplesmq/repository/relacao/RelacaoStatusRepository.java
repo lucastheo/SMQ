@@ -90,12 +90,24 @@ public class RelacaoStatusRepository {
         for( RelacaoEntity relacaoEntity : processamento.get(nomeGrupo) ){
             if( relacaoEntity.getIdentificacaoMensagem().equals(identificacaoMensagem) ){
                 if( processamento.get(nomeGrupo).remove(relacaoEntity)){
+                    if( processamento.get(nomeGrupo).size() == 0 && !this.existeMesnagemNovaParaGrupo(nomeGrupo)){
+                        processamento.remove(nomeGrupo);
+                    }
                     finalizado.add(relacaoEntity);
                     return Optional.of(relacaoEntity);
                 }
             }
         }
         return Optional.empty();
+    }
+
+    private Boolean existeMesnagemNovaParaGrupo( String nomeGrupo ){
+        for(String nomeFila : this.novo.keySet() ){
+            if( this.novo.get(nomeFila).containsKey(nomeGrupo) && this.novo.get(nomeFila).get(nomeGrupo).size() > 0 ){
+                return true;
+            }
+        }
+        return false;
     }
 
     public Optional<RelacaoEntity> limpaFinalizado(){
@@ -135,7 +147,7 @@ public class RelacaoStatusRepository {
         for(String nomeConsumo : novo.getOrDefault(mensagemEntity.getNomeFila(), new ConcurrentHashMap<>()).keySet()){
             for( RelacaoEntity relacaoEntity : novo.get(mensagemEntity.getNomeFila()).get(nomeConsumo)){
                 if(relacaoEntity.getIdentificacaoMensagem().equals( mensagemEntity.getIdentificacao())) {
-                    finalizado.add(relacaoEntity);
+                    processamento.get(relacaoEntity.getNome()).add(relacaoEntity);
                     novo.get(mensagemEntity.getNomeFila()).get(nomeConsumo).remove(relacaoEntity);
                 }
             }
@@ -144,8 +156,7 @@ public class RelacaoStatusRepository {
         for( String nomeConsumo : processamento.keySet() ){
             for(RelacaoEntity relacaoEntity : processamento.get(nomeConsumo)){
                 if(relacaoEntity.getIdentificacaoMensagem().equals( mensagemEntity.getIdentificacao())){
-                    finalizado.add(relacaoEntity);
-                    processamento.get(nomeConsumo).remove(relacaoEntity);
+                    this.finaliza(nomeConsumo,relacaoEntity.getIdentificacaoMensagem());
                 }
             }
         }

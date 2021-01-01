@@ -92,7 +92,6 @@ public class MensagemController {
         try {
             consultaMensagemDto = reservaService.execute(reserve) ;
         } catch (NaoEncontradoException ex) {
-            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorEoMapping.mapFrom(ex));
         } catch (ProcessoException ex) {
             ex.printStackTrace();

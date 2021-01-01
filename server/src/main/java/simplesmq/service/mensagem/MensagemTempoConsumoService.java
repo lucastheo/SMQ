@@ -19,8 +19,6 @@ public class MensagemTempoConsumoService {
     @Autowired
     MensagemIdentidificacaoService mensagemIdentidificacaoService;
     @Autowired
-    MensagemPersistenciaService mensagemPersistenciaService;
-    @Autowired
     MensagemConsultaService mensagemConsultaService;
     @Autowired
     ReservaFinalizadoService reservaFinalizadoService;
@@ -31,7 +29,7 @@ public class MensagemTempoConsumoService {
         }
     }
 
-    @Scheduled(cron = "* * * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void consumo(){
         List<UUID> relacaoEntityList = mensagemIdentidificacaoService.listaIdentificacaoMensagens();
         MensagemEntity mensagemEntity;

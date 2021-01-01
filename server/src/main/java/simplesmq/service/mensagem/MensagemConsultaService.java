@@ -3,8 +3,6 @@ package simplesmq.service.mensagem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.MensagemEntity;
-import simplesmq.repository.mensagem.MensagemPersistenciaCacheRepository;
-import simplesmq.repository.mensagem.MensagemPersistenciaDiscoRepository;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,18 +15,14 @@ import java.util.Optional;
 public class MensagemConsultaService {
 
     @Autowired
-    MensagemPersistenciaCacheRepository mensagemPersistenciaCacheRepository;
-    @Autowired
-    MensagemPersistenciaDiscoRepository mensagemPersistenciaDiscoRepository;
+    MensagemPersistenciaService mensagemPersistenciaService;
 
     public MensagemEntity por(String identificacao ) throws IOException {
-        Optional<MensagemEntity> optionalCache = mensagemPersistenciaCacheRepository.busca(identificacao);
+        Optional<MensagemEntity> optionalCache = mensagemPersistenciaService.buscaCache(identificacao);
         if( optionalCache.isPresent()){
             return optionalCache.get();
         }
-
-        MensagemEntity mensagemEntity = mensagemPersistenciaDiscoRepository.ler(identificacao);
-        return mensagemEntity;
+        return mensagemPersistenciaService.buscaDisco(identificacao);
     }
 
 

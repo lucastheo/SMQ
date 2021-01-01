@@ -4,10 +4,11 @@ import org.springframework.stereotype.Component;
 import simplesmq.configuration.LocalDeArquivosConfiguration;
 import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.domain.entity.RelacaoEntity;
-import simplesmq.repository.mensagem.MensagemIdentidificacaoRepository;
-import simplesmq.repository.mensagem.MensagemPersistenciaDiscoRepository;
-import simplesmq.repository.relacao.RelacaoPersistenciaDiscoRepository;
-import simplesmq.repository.relacao.RelacaoStatusRepository;
+import simplesmq.service.configuracaoservice.FilaConfiguracaoService;
+import simplesmq.service.mensagem.MensagemIdentidificacaoService;
+import simplesmq.service.mensagem.MensagemPersistenciaService;
+import simplesmq.service.relacao.RelacaoPersistenciaService;
+import simplesmq.service.relacao.RelacaoStatusService;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,21 +18,21 @@ import java.util.UUID;
 
 @Component
 public class CarregaDadosService {
-    MensagemIdentidificacaoRepository mensagemIdentidificacaoRepository;
-    MensagemPersistenciaDiscoRepository mensagemPersistenciaDiscoRepository;
-    RelacaoPersistenciaDiscoRepository relacaoPersistenciaDiscoRepository;
-    RelacaoStatusRepository relacaoStatusRepository;
+    MensagemIdentidificacaoService mensagemIdentidificacaoService;
+    MensagemPersistenciaService mensagemPersistenciaService;
+    RelacaoPersistenciaService relacaoPersistenciaService;
+    RelacaoStatusService relacaoStatusService;
     FilaConfiguracaoService filaConfiguracaoService;
 
-    public CarregaDadosService(MensagemIdentidificacaoRepository mensagemIdentidificacaoRepository,
-                               MensagemPersistenciaDiscoRepository mensagemPersistenciaDiscoRepository,
-                               RelacaoPersistenciaDiscoRepository relacaoPersistenciaDiscoRepository,
-                               RelacaoStatusRepository relacaoStatusRepository,
+    public CarregaDadosService(MensagemIdentidificacaoService mensagemIdentidificacaoService,
+                               MensagemPersistenciaService mensagemPersistenciaService,
+                               RelacaoPersistenciaService relacaoPersistenciaService,
+                               RelacaoStatusService relacaoStatusService,
                                FilaConfiguracaoService filaConfiguracaoService){
-        this.mensagemIdentidificacaoRepository = mensagemIdentidificacaoRepository;
-        this.mensagemPersistenciaDiscoRepository = mensagemPersistenciaDiscoRepository;
-        this.relacaoPersistenciaDiscoRepository = relacaoPersistenciaDiscoRepository;
-        this.relacaoStatusRepository = relacaoStatusRepository;
+        this.mensagemIdentidificacaoService = mensagemIdentidificacaoService;
+        this.mensagemPersistenciaService = mensagemPersistenciaService;
+        this.relacaoPersistenciaService = relacaoPersistenciaService;
+        this.relacaoStatusService = relacaoStatusService;
         this.filaConfiguracaoService = filaConfiguracaoService;
         this.execute();
     }
@@ -52,7 +53,7 @@ public class CarregaDadosService {
         Set<String> mensagensExistentes = new LinkedHashSet<>();
         for(File mensagemFilha : mensagens.listFiles()){
             try {
-                 mensagemEntity = mensagemPersistenciaDiscoRepository.ler(mensagemFilha.getName());
+                 mensagemEntity = mensagemPersistenciaService.buscaDisco(mensagemFilha.getName());
                  mensagensExistentes.add(mensagemEntity.getIdentificacao());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -63,12 +64,10 @@ public class CarregaDadosService {
         Set<String> mensagensExistentesNasRelacoes = new LinkedHashSet<>();
         for(File relacaoFilha : relacoes.listFiles()){
             try {
-                relacaoEntity = relacaoPersistenciaDiscoRepository.ler(relacaoFilha.getName());
+                relacaoEntity = relacaoPersistenciaService.buscaDisco(relacaoFilha.getName());
                 if( mensagensExistentes.contains(relacaoEntity.getIdentificacaoMensagem())) {
-                    mensagemEntity = mensagemPersistenciaDiscoRepository.ler(relacaoEntity.getIdentificacaoMensagem());
-                    relacaoStatusRepository.addFila(mensagemEntity.getNomeFila());
-                    relacaoStatusRepository.addConsumidores(mensagemEntity.getNomeFila(), relacaoEntity.getNome());
-                    relacaoStatusRepository.addRelacao(mensagemEntity.getNomeFila(), relacaoEntity.getNome(), relacaoEntity);
+                    mensagemEntity = mensagemPersistenciaService.buscaDisco(relacaoEntity.getIdentificacaoMensagem());
+                    relacaoStatusService.addFilaConsumidorRelacao(relacaoEntity,mensagemEntity);
                     mensagensExistentesNasRelacoes.add(relacaoEntity.getIdentificacaoMensagem());
                 }else{
                     System.err.println("Não foi encontrada a mensagem");
@@ -79,9 +78,9 @@ public class CarregaDadosService {
         }
         for(File mensagemFilha : mensagens.listFiles()){
             try {
-                mensagemEntity = mensagemPersistenciaDiscoRepository.ler(mensagemFilha.getName());
+                mensagemEntity = mensagemPersistenciaService.buscaDisco(mensagemFilha.getName());
                 if(mensagensExistentesNasRelacoes.contains(mensagemEntity.getIdentificacao())) {
-                    mensagemIdentidificacaoRepository.add(UUID.fromString(mensagemEntity.getIdentificacao()));
+                    mensagemIdentidificacaoService.add(UUID.fromString(mensagemEntity.getIdentificacao()));
                 }
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();

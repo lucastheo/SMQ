@@ -6,19 +6,21 @@ import simplesmq.configuration.CacheConfiguration;
 import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.repository.mensagem.MensagemPersistenciaCacheRepository;
 import simplesmq.repository.mensagem.MensagemPersistenciaDiscoRepository;
+import simplesmq.service.configuracaoservice.FilaConfiguracaoService;
 
 import java.io.IOException;
+import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class MensagemPersistenciaService {
 
     @Autowired
-    simplesmq.service.FilaConfiguracaoService filaConfiguracaoService;
+    FilaConfiguracaoService filaConfiguracaoService;
     @Autowired
     CacheConfiguration cacheConfiguration;
     @Autowired
     MensagemPersistenciaDiscoRepository mensagemPersistenciaDiscoRepository;
-
     @Autowired
     MensagemPersistenciaCacheRepository mensagemPersistenciaCacheRepository;
 
@@ -40,5 +42,16 @@ public class MensagemPersistenciaService {
     }
     public void removeCache( MensagemEntity mensagemEntity ) throws InterruptedException {
         mensagemPersistenciaCacheRepository.remover(mensagemEntity);
+    }
+
+    public Optional<MensagemEntity> buscaCache(String identificacao){
+        return mensagemPersistenciaCacheRepository.busca(identificacao);
+    }
+    public  MensagemEntity buscaDisco(String identificacao) throws IOException {
+        return mensagemPersistenciaDiscoRepository.ler(identificacao);
+    }
+
+    public Set<String> mensagensEmCache(String nomeFila) {
+        return mensagemPersistenciaCacheRepository.mensagensEmCache(nomeFila);
     }
 }
