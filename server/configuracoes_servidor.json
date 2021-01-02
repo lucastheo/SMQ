@@ -1,0 +1,6 @@
+{
+  "local-armazenar-mensagem": "./mensagem",
+  "local-armazenar-relacao":  "./relacao",
+  "tamanho-da-cache":"10",
+  "tamanho-maximo-busca":"1000"
+}
