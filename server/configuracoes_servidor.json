@@ -1,6 +1,6 @@
 {
-  "local-armazenar-mensagem": "./mensagem",
-  "local-armazenar-relacao":  "./relacao",
   "tamanho-da-cache":"10",
-  "tamanho-maximo-busca":"1000"
+  "tamanho-maximo-busca":"1000",
+  "local-armazenar-mensagem": "./.SMQ-files/mensagem",
+  "local-armazenar-relacao":  "./.SMQ-files/relacao"
 }

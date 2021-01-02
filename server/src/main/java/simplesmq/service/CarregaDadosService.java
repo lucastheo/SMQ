@@ -40,10 +40,16 @@ public class CarregaDadosService {
 
     public void execute() {
         File mensagens = new File(LocalDeArquivosConfiguration.MENSAGEM);
+        if(!mensagens.exists()){
+            mensagens.mkdirs();
+        }
         if( !mensagens.isDirectory() ){
             System.err.println("Caminho das mensagens precisa ser uma pasta");
         }
         File relacoes = new File(LocalDeArquivosConfiguration.RELACAO);
+        if(!relacoes.exists()){
+            relacoes.mkdirs();
+        }
         if( !relacoes.isDirectory() ){
             System.err.println("Caminho das relações precisa ser uma pasta");
         }
