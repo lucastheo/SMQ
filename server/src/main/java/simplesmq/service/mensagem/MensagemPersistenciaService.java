@@ -9,6 +9,7 @@ import simplesmq.repository.mensagem.MensagemPersistenciaDiscoRepository;
 import simplesmq.service.configuracaoservice.FilaConfiguracaoService;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,6 +53,6 @@ public class MensagemPersistenciaService {
     }
 
     public Set<String> mensagensEmCache(String nomeFila) {
-        return mensagemPersistenciaCacheRepository.mensagensEmCache(nomeFila);
+        return new HashSet<String>(mensagemPersistenciaCacheRepository.mensagensEmCache(nomeFila));
     }
 }
