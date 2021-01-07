@@ -38,7 +38,7 @@ public class ReservaService {
         try {
             mensagemEntity = mensagemConsultaService.por(relacaoEntity.getIdentificacaoMensagem());
         } catch (IOException e) {
-            throw new ProcessoException("Falha em ler o arquivo da mensagem");
+            throw new ProcessoException("Falha em ler o arquivo da mensagem" , e);
         }
 
         relacaoTempoConsumoService.add(relacaoEntity,reserve.getTempoConsumo());

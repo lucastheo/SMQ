@@ -18,11 +18,12 @@ public class ArquivoConfiguration {
             String arquivo = FileUtils.ler(CAMINHO_ARQUIVO_CONFIGURACAO);
             HashMap<String,String> resultado = objectMapper.readValue(arquivo, HashMap.class);
             if(resultado.containsKey(tag)){
-                return Optional.of(resultado.get(tag));
+                return Optional.of(String.valueOf(resultado.get(tag)));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return Optional.empty();
     }
 

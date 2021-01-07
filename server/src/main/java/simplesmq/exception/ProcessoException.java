@@ -7,8 +7,14 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ProcessoException extends Exception {
     String descricao;
-    public ProcessoException(String descricao){
+    Exception exception;
+    public ProcessoException( String descricao , Exception exception ){
+        this.exception=exception;
         this.descricao = descricao;
     }
 
+    @Override
+    public void printStackTrace() {
+        exception.printStackTrace();
+    }
 }

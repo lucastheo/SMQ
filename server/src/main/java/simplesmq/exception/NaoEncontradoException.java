@@ -7,7 +7,10 @@ import lombok.EqualsAndHashCode;
 @Data
 public class NaoEncontradoException extends Exception {
     String descricao;
-    public NaoEncontradoException(String descricao){
+
+    Exception exception;
+
+    public NaoEncontradoException( String descricao){
         this.descricao = descricao;
     }
 

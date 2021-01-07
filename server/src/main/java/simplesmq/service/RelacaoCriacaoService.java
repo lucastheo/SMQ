@@ -26,7 +26,7 @@ public class RelacaoCriacaoService {
         try {
             relacaoPersistenciaService.persistenciaEmDisco(nomeFila, relacoes);
         } catch (IOException e) {
-            throw new ProcessoException("Erro em salvar em disco a relação");
+            throw new ProcessoException("Erro em salvar em disco a relação" , e);
         }
         relacaoStatusService.adicionar( nomeFila,relacoes );
     }

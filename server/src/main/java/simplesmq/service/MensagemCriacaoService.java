@@ -30,7 +30,7 @@ public class MensagemCriacaoService {
             identificacao = mensagemIdentidificacaoService.geraNova();
         } catch (InterruptedException e) {
             this.reverter(identificacao);
-            throw new ProcessoException("Erro durante adição da mensagem");
+            throw new ProcessoException("Erro durante adição da mensagem" , e);
         }
         return identificacao;
     }
@@ -40,11 +40,11 @@ public class MensagemCriacaoService {
         try {
             mensagemPersistenciaService.persiste(mensagemEntity);
         }
-        catch (JsonProcessingException e ){ throw new ProcessoException("Erro em converter a mensagem para Json"); }
+        catch (JsonProcessingException e ){ throw new ProcessoException("Erro em converter a mensagem para Json" , e); }
         catch (IOException e) {
             this.reverter(identificacao);
             this.reverterDisco(mensagemEntity);
-            throw new ProcessoException("Erro em salvar o disco");
+            throw new ProcessoException("Erro em salvar o disco" , e);
         }
 
         try{
@@ -55,9 +55,9 @@ public class MensagemCriacaoService {
             try {
                 this.reverterCache(mensagemEntity);
             } catch (InterruptedException interruptedException) {
-                throw new ProcessoException("Erro critico em reverter cache");
+                throw new ProcessoException("Erro critico em reverter cache" , e);
             }
-            throw new ProcessoException("Erro em salvar a mensagem na cache");
+            throw new ProcessoException("Erro em salvar a mensagem na cache" , e);
         }
     }
 
@@ -67,7 +67,7 @@ public class MensagemCriacaoService {
         try {
             this.reverterCache(mensagemEntity);
         } catch (InterruptedException e) {
-            throw new ProcessoException("Erro critico em reverter a cache de mensagens");
+            throw new ProcessoException("Erro critico em reverter a cache de mensagens" ,e );
         }
     }
     public void reverter( UUID uuid ){
