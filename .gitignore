@@ -23,3 +23,5 @@
 hs_err_pid*
 *configuracoes_servidor.json
 */.SMQ-files
+*/__pycache__/
+*.pyc
