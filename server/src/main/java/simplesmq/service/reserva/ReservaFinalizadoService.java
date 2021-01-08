@@ -9,6 +9,7 @@ import simplesmq.domain.entity.RelacaoEntity;
 import simplesmq.domain.enuns.StatusElementoEmAgrupamentoEnum;
 import simplesmq.service.relacao.RelacaoPersistenciaService;
 import simplesmq.service.relacao.RelacaoStatusService;
+import simplesmq.util.Logger;
 
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -39,6 +40,7 @@ public class ReservaFinalizadoService {
 
     @Scheduled(fixedDelay = 5000)
     public void removendo(){
+        Logger.info("Inicio do processo de limpeza das relações");
         Optional<RelacaoEntity> optionalRelacaoEntity = Optional.empty();
         do{
             optionalRelacaoEntity = relacaoStatusService.limpaFinalizado();

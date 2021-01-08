@@ -9,6 +9,7 @@ import simplesmq.service.mensagem.MensagemIdentidificacaoService;
 import simplesmq.service.mensagem.MensagemPersistenciaService;
 import simplesmq.service.relacao.RelacaoPersistenciaService;
 import simplesmq.service.relacao.RelacaoStatusService;
+import simplesmq.util.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,14 +45,14 @@ public class CarregaDadosService {
             mensagens.mkdirs();
         }
         if( !mensagens.isDirectory() ){
-            System.err.println("Caminho das mensagens precisa ser uma pasta");
+            Logger.erro("Caminho das mensagens precisa ser uma pasta");
         }
         File relacoes = new File(LocalDeArquivosConfiguration.RELACAO);
         if(!relacoes.exists()){
             relacoes.mkdirs();
         }
         if( !relacoes.isDirectory() ){
-            System.err.println("Caminho das relações precisa ser uma pasta");
+            Logger.erro("Caminho das relações precisa ser uma pasta");
         }
 
 
@@ -62,7 +63,7 @@ public class CarregaDadosService {
                  mensagemEntity = mensagemPersistenciaService.buscaDisco(mensagemFilha.getName());
                  mensagensExistentes.add(mensagemEntity.getIdentificacao());
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.warn("Erro ao buscar as mensagem já existentes no disco");
             }
         }
 
@@ -76,10 +77,10 @@ public class CarregaDadosService {
                     relacaoStatusService.addFilaConsumidorRelacao(relacaoEntity,mensagemEntity);
                     mensagensExistentesNasRelacoes.add(relacaoEntity.getIdentificacaoMensagem());
                 }else{
-                    System.err.println("Não foi encontrada a mensagem");
+                    Logger.warn( "Não foi encontrada a mensagem dentro das mensagens existentes, ou seja existe uma relação que aponta para uma mensagem que não existe");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.erro("Erro em buscar do disco a relação ou a mensagem já existente" , e );
             }
         }
         for(File mensagemFilha : mensagens.listFiles()){
@@ -88,8 +89,10 @@ public class CarregaDadosService {
                 if(mensagensExistentesNasRelacoes.contains(mensagemEntity.getIdentificacao())) {
                     mensagemIdentidificacaoService.add(UUID.fromString(mensagemEntity.getIdentificacao()));
                 }
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+            } catch (IOException e ) {
+                Logger.erro("Erro em buscar do disco a mensagem já existente");
+            }catch ( InterruptedException e){
+                Logger.erro("Erro em carregar a mensagem na estrutura de dados");
             }
         }
 

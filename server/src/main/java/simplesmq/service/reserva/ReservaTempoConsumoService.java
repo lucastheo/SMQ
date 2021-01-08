@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.RelacaoEntity;
 import simplesmq.repository.relacao.RelacaoTempoConsumoRepository;
 import simplesmq.service.relacao.RelacaoStatusService;
+import simplesmq.util.Logger;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +27,8 @@ public class ReservaTempoConsumoService {
 
     @Scheduled(fixedDelay = 60*1000)
     public void consumo(){
-         List<RelacaoEntity> relacaoEntityList = relacaoTempoConsumoRepository.desempilha(LocalDateTime.now());
-         relacaoEntityList.forEach(relacaoEntity -> relacaoStatusService.voltaParaNovo(relacaoEntity));
+        Logger.info("Inicio do processo que remove as mensagem que estouraram o tempo da reserva");
+        List<RelacaoEntity> relacaoEntityList = relacaoTempoConsumoRepository.desempilha(LocalDateTime.now());
+        relacaoEntityList.forEach(relacaoEntity -> relacaoStatusService.voltaParaNovo(relacaoEntity));
     }
 }

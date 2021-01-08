@@ -2,6 +2,7 @@ package simplesmq.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import simplesmq.util.FileUtils;
+import simplesmq.util.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class ArquivoConfiguration {
                 return Optional.of(String.valueOf(resultado.get(tag)));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.erro("Erro em carregar a configuração" , tag , e);
         }
 
         return Optional.empty();

@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.service.reserva.ReservaFinalizadoService;
+import simplesmq.util.Logger;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class MensagemTempoConsumoService {
 
     @Scheduled(cron = "0 0 * * * *")
     public void consumo(){
+        Logger.info("Inicio do processo de limpeza das mensagens que passaram do tempo de consumo");
         List<UUID> relacaoEntityList = mensagemIdentidificacaoService.listaIdentificacaoMensagens();
         MensagemEntity mensagemEntity;
         LocalDateTime localDateTime= LocalDateTime.now();
@@ -39,7 +41,7 @@ public class MensagemTempoConsumoService {
                 mensagemEntity = mensagemConsultaService.por(uuid.toString());
                 compara(mensagemEntity,localDateTime, uuid);
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.erro("Erro no processo de limpeza das mensagens que passaram do tempo de consumo");
             }
 
         }

@@ -11,6 +11,7 @@ import simplesmq.mapping.domain.dto.IdendificacaoMensagemDtoMapping;
 import simplesmq.mapping.domain.entity.MensagemEntityMapping;
 import simplesmq.service.mensagem.MensagemIdentidificacaoService;
 import simplesmq.service.mensagem.MensagemPersistenciaService;
+import simplesmq.util.Logger;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -75,7 +76,7 @@ public class MensagemCriacaoService {
             try {
                 mensagemIdentidificacaoService.remove(uuid);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger.erro("Erro em remover a identificação das mesnagens" , uuid );
             }
         }
     }

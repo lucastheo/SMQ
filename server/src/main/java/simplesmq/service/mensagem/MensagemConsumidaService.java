@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.service.relacao.RelacaoStatusService;
+import simplesmq.util.Logger;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -31,6 +32,7 @@ public class MensagemConsumidaService {
     * */
     @Scheduled(fixedDelay=5000)
     void mensagensConsumidas(){
+        Logger.info("Inicio do processo de limpeza das mensagens que já foram consumidas");
         Optional<String> optionalIdentificaoMensagem = Optional.empty();
         do {
             optionalIdentificaoMensagem = relacaoStatusService.limpaRelacaoZerada();
@@ -41,7 +43,7 @@ public class MensagemConsumidaService {
                     mensagemPersistenciaService.remove(mensagemEntity);
                     mensagemIdentidificacaoService.remove(UUID.fromString(mensagemEntity.getIdentificacao()));
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    Logger.erro("Processo de limpeza das mensagens que já foram consumidas teve falha em processar" , optionalIdentificaoMensagem.get() , e );
                 }
             }
         }while(optionalIdentificaoMensagem.isPresent());
