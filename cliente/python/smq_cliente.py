@@ -1,12 +1,14 @@
 import requests
 import json
 import time 
+from datetime import datetime, timedelta
 
 class SmqCliente:
-    __slots__ = ['_url']
+    __slots__ = ['_url' , '_tempo_consumo']
 
-    def __init__(self , url="http://localhost:8080"):
+    def __init__(self , url="http://localhost:8080" , tempo_consumo = 604800 ):
         self._url = url
+        self._tempo_consumo = (datetime.now()- timedelta( minutes=tempo_consumo)).isoformat()
 
     def envia(self , nome_fila="padrao" , lista_elementos_grupo = list() , mensagem = "" ):
         lista_consumidores = self.__envia_gera_lista_consumidores(lista_elementos_grupo)
@@ -30,7 +32,7 @@ class SmqCliente:
         retorno = self.recebe_nao_bloqueante(nome_fila, elemento_grupo)
         while not retorno.existe():
             retorno = self.recebe_nao_bloqueante(nome_fila, elemento_grupo)
-        return retorno
+        return retorno 
         
 
     def recebe_nao_bloqueante(self, nome_fila="padrao" , elemento_grupo = "padrao"):
@@ -83,6 +85,7 @@ class SmqCliente:
         body['fila'] = {"nome":nome_fila}
         body['consumidores']  = lista_consumidores
         body['mensagem'] = mensagem
+        body['data_expiração'] = self._tempo_consumo
         return body
 
     def __envia_gera_lista_consumidores(self, lista_elementos_grupo):
