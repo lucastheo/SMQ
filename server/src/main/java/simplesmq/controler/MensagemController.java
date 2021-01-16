@@ -95,7 +95,7 @@ public class MensagemController {
             consultaMensagemDto = reservaService.execute(reserve) ;
         } catch (NaoEncontradoException ex) {
             Logger.info("Não encontrou mensagem para ser consumida" , reserve  );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorEoMapping.mapFrom(ex));
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (ProcessoException ex) {
             Logger.erro("Erro em consumir mensagem" , reserve , ex );
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorEoMapping.mapFrom(ex));

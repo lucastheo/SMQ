@@ -18,7 +18,7 @@ public class Logger {
     public static void info( String mensagem ){
         if( nivel <= 1 ) {
             threadPool.submit(() -> {
-                log(tempoAtual() + "  INFO  --------------------------- " + mensagem);
+                log(tempoAtual() + "  INFO  -------------------------- " + mensagem);
             });
         }
     }
@@ -26,7 +26,7 @@ public class Logger {
     public static void info( String mensagem , Object object){
         if(nivel <= 1 ) {
             threadPool.submit(() -> {
-                log(tempoAtual() + "  INFO --------------------------- " + mensagem + ":" + object.toString());
+                log(tempoAtual() + "  INFO -------------------------- " + mensagem + ":" + object.toString());
             });
         }
     }
@@ -34,7 +34,7 @@ public class Logger {
     public static void warn( String mensagem ){
         if( nivel <= 2 ) {
             threadPool.submit(() -> {
-                log(tempoAtual() + "  WARN --------------------------- " + mensagem);
+                log(tempoAtual() + "  WARN -------------------------- " + mensagem);
             });
         }
     }
@@ -42,7 +42,7 @@ public class Logger {
     public static void warn( String mensagem , Object object ){
         if( nivel <= 2) {
             threadPool.submit(() -> {
-                log(tempoAtual() + "  WARN --------------------------- " + mensagem + ":" + object.toString() + ":" + object.toString());
+                log(tempoAtual() + "  WARN -------------------------- " + mensagem + ":" + object.toString() + ":" + object.toString());
             });
         }
     }
@@ -50,13 +50,13 @@ public class Logger {
     public static void warn( String mensagem , Object object , Object object1 ){
         if( nivel <= 2 ) {
             threadPool.submit(() -> {
-                log(tempoAtual() + "  WARN --------------------------- " + mensagem + ":" + object.toString() + ":" + object.toString() + ":" + object1.toString());
+                log(tempoAtual() + "  WARN -------------------------- " + mensagem + ":" + object.toString() + ":" + object.toString() + ":" + object1.toString());
             });
         }
     }
 
     public static void erro( String mensagem , Object object ){
-        threadPool.submit(() -> { log( tempoAtual() + "  ERRO --------------------------- " + mensagem + ":" + mensagem + ":"+ object.toString()); } );
+        threadPool.submit(() -> { log( tempoAtual() + "  ERRO -------------------------- " + mensagem + ":" + mensagem + ":"+ object.toString()); } );
     }
     public static void erro( String mensagem , Object object , Exception ex ){
         threadPool.submit(() -> {
@@ -66,13 +66,13 @@ public class Logger {
     }
     public static void erro( String mensagem , Exception ex ){
         threadPool.submit(() -> {
-            log( tempoAtual() +  "  ERRO --------------------------- " + mensagem  );
+            log( tempoAtual() +  "  ERRO -------------------------- " + mensagem  );
             ex.printStackTrace();
         } );
     }
     public static void erro( String mensagem ){
         threadPool.submit(() -> {
-            log(tempoAtual() +  " ERRO --------------------------- " + mensagem  );
+            log(tempoAtual() +  " ERRO -------------------------- " + mensagem  );
         } );
     }
 

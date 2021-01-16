@@ -22,7 +22,7 @@ public class ArquivoConfiguration {
                 return Optional.of(String.valueOf(resultado.get(tag)));
             }
         } catch (IOException e) {
-            Logger.erro("Erro em carregar a configuração" , tag , e);
+            Logger.erro("Erro em carregar a configuração" , e.toString() );
         }
 
         return Optional.empty();
