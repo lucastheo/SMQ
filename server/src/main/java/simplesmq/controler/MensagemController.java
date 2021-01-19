@@ -40,7 +40,7 @@ public class MensagemController {
     ConsumoService consumoService;
 
     @PostMapping("/mensagem")
-    public ResponseEntity getMostCited(@RequestBody MensagemDto mensagem){
+    public ResponseEntity criandoMensagem(@RequestBody MensagemDto mensagem){
         Logger.info("Gernado novo registro" , mensagem );
         try {
             MensagemDtoValidate.execute(mensagem);
@@ -66,7 +66,7 @@ public class MensagemController {
         try {
             relacaoCriacaoService.execute(identificacao,mensagem);
         } catch (ProcessoException ex) {
-            Logger.erro("Erro em criar nova identificação" , mensagem , ex );
+            Logger.erro("Erro em criar nova relação" , mensagem , ex );
             mensagemCriacaoService.reverter(identificacao);
             try {
                 mensagemCriacaoService.reverter(identificacao,mensagem);
@@ -74,13 +74,14 @@ public class MensagemController {
                 Logger.erro("Erro em reverter o processo da nova identificação" , mensagem , ex );
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorEoMapping.mapFrom(ex));
             }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorEoMapping.mapFrom(ex));
         }
         IdendificacaoMensagemDto response = mensagemCriacaoService.response(identificacao);
         return ResponseEntity.status(HttpStatus.OK).body( response );
     }
 
     @GetMapping("/mensagem")
-    public ResponseEntity getMostCited(@RequestParam("fila") String nomeFila , @RequestParam("grupo") String nomeGrupo , @RequestHeader("data-expiracao") Optional<Long> optionalTempoConsumo  ){
+    public ResponseEntity reservandoMensagem(@RequestParam("fila") String nomeFila , @RequestParam("grupo") String nomeGrupo , @RequestHeader("data-expiracao") Optional<Long> optionalTempoConsumo  ){
         ReservaDco reserve = ReservaDcoMapping.mapFrpm(nomeFila,nomeGrupo,optionalTempoConsumo.orElse(5L));
         Logger.info("Inicio da reserva da mensagem" , reserve  );
         try{
@@ -105,7 +106,7 @@ public class MensagemController {
     }
 
     @PostMapping("/mensagem/{identificacao_mensagem}/consumidor/{nome_consumidor}")
-    public ResponseEntity getMostCited(@PathVariable("identificacao_mensagem") String identificacaoMensagem, @PathVariable("nome_consumidor") String nomeGrupo){
+    public ResponseEntity confirmaConsumo(@PathVariable("identificacao_mensagem") String identificacaoMensagem, @PathVariable("nome_consumidor") String nomeGrupo){
         ConsumoDco consumo = ConsumoDcoMapping.mapFrom(identificacaoMensagem,nomeGrupo);
         Logger.info("Inicio da confirmação de consumo da mensagem" , consumo  );
         try{
@@ -120,8 +121,6 @@ public class MensagemController {
             Logger.erro("Erro ao tentar consumor a menagem" , consumo , ex );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorEoMapping.mapFrom(ex));
         }
-
         return ResponseEntity.status(HttpStatus.OK).build();
-
     }
 }
