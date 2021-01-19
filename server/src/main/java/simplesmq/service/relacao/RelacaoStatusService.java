@@ -58,6 +58,10 @@ public class RelacaoStatusService {
         relacaoStatusRepository.removeTodasOcorrencias(mensagemEntity);
     }
 
+    public void removeTodasOcorrenciasPorFila(String nomeFila ){
+        relacaoStatusRepository.removeTodasMensagemFiltrandoPorFila(nomeFila);
+    }
+
     public Optional<RelacaoEntity> limpaFinalizado() {
         return relacaoStatusRepository.limpaFinalizado();
     }

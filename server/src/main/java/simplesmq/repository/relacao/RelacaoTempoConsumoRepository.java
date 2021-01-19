@@ -2,6 +2,7 @@ package simplesmq.repository.relacao;
 
 import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.RelacaoEntity;
+import simplesmq.util.Logger;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -16,9 +17,14 @@ public class RelacaoTempoConsumoRepository {
 
     public void add(RelacaoEntity relacaoEntity , LocalDateTime localDateTime){
         lock.lock();
-        relacaoTempoConsumo.putIfAbsent(localDateTime ,  new LinkedList() );
-        relacaoTempoConsumo.get(localDateTime).add(relacaoEntity);
-        lock.unlock();
+        try {
+            relacaoTempoConsumo.putIfAbsent(localDateTime, new LinkedList());
+            relacaoTempoConsumo.get(localDateTime).add(relacaoEntity);
+        }catch(Exception e ){
+            Logger.erro("Erro durante o processo de lock na relacaoTempoConsumoRepository");
+        }finally {
+            lock.unlock();
+        }
     }
 
     public List<RelacaoEntity> desempilha(LocalDateTime busca ){

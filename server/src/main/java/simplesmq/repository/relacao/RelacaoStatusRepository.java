@@ -3,12 +3,16 @@ package simplesmq.repository.relacao;
 import org.springframework.stereotype.Component;
 import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.domain.entity.RelacaoEntity;
+import simplesmq.util.Logger;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class RelacaoStatusRepository {
@@ -21,6 +25,8 @@ public class RelacaoStatusRepository {
     ConcurrentHashMap<String, AtomicInteger> controleQuantidadeElementos = new ConcurrentHashMap<>();
 
     ConcurrentLinkedQueue<String> controleQuantidadeJaZerados = new ConcurrentLinkedQueue<>();
+
+    Lock controleDaVoltaDosEstadosLock = new ReentrantLock();
 
     public void addFila(String nomeFila){
         novo.putIfAbsent(nomeFila,new ConcurrentHashMap<>());
@@ -48,9 +54,17 @@ public class RelacaoStatusRepository {
     }
 
     public Boolean voltaParaNovo(RelacaoEntity relacaoEntity ){
-        if( processamento.containsKey(relacaoEntity.getNome() ) ){
-            if( processamento.get(relacaoEntity.getNome()).remove(relacaoEntity) ){
-                this.addRelacao(relacaoEntity.getNomeFila(),relacaoEntity.getNome(),relacaoEntity);
+        if (processamento.containsKey(relacaoEntity.getNome())) {
+            if (processamento.get(relacaoEntity.getNome()).remove(relacaoEntity)) {
+                try {
+                    controleDaVoltaDosEstadosLock.lock();
+                    this.addRelacao(relacaoEntity.getNomeFila(), relacaoEntity.getNome(), relacaoEntity);
+                }catch(Exception exception ){
+                    Logger.erro("Erro durante o processo de voltaParaNovo" , relacaoEntity , exception);
+                    throw exception;
+                }finally{
+                    controleDaVoltaDosEstadosLock.unlock();
+                }
                 return true;
             }
         }
@@ -144,21 +158,55 @@ public class RelacaoStatusRepository {
     }
 
     public void removeTodasOcorrencias(MensagemEntity mensagemEntity){
-        for(String nomeConsumo : novo.getOrDefault(mensagemEntity.getNomeFila(), new ConcurrentHashMap<>()).keySet()){
-            for( RelacaoEntity relacaoEntity : novo.get(mensagemEntity.getNomeFila()).get(nomeConsumo)){
-                if(relacaoEntity.getIdentificacaoMensagem().equals( mensagemEntity.getIdentificacao())) {
-                    processamento.get(relacaoEntity.getNome()).add(relacaoEntity);
-                    novo.get(mensagemEntity.getNomeFila()).get(nomeConsumo).remove(relacaoEntity);
+        try {
+            controleDaVoltaDosEstadosLock.lock();
+            for (String nomeConsumo : novo.getOrDefault(mensagemEntity.getNomeFila(), new ConcurrentHashMap<>()).keySet()) {
+                for (RelacaoEntity relacaoEntity : novo.get(mensagemEntity.getNomeFila()).get(nomeConsumo)) {
+                    if (relacaoEntity.getIdentificacaoMensagem().equals(mensagemEntity.getIdentificacao())) {
+                        processamento.get(relacaoEntity.getNome()).add(relacaoEntity);
+                        novo.get(mensagemEntity.getNomeFila()).get(nomeConsumo).remove(relacaoEntity);
+                    }
                 }
             }
-        }
 
-        for( String nomeConsumo : processamento.keySet() ){
-            for(RelacaoEntity relacaoEntity : processamento.get(nomeConsumo)){
-                if(relacaoEntity.getIdentificacaoMensagem().equals( mensagemEntity.getIdentificacao())){
+            for (String nomeConsumo : processamento.keySet()) {
+                for (RelacaoEntity relacaoEntity : processamento.get(nomeConsumo)) {
+                    if (relacaoEntity.getIdentificacaoMensagem().equals(mensagemEntity.getIdentificacao())) {
+                        this.finaliza(nomeConsumo, relacaoEntity.getIdentificacaoMensagem());
+                    }
+                }
+            }
+        }catch(Exception ex ){
+            Logger.erro("Erro durante a remoção da MesnagemEntity no sistema" , mensagemEntity , ex );
+            throw ex;
+        }
+        finally{
+            controleDaVoltaDosEstadosLock.unlock();
+        }
+    }
+
+    public  void removeTodasMensagemFiltrandoPorFila( String nomeFila ){
+        try {
+            controleDaVoltaDosEstadosLock.lock();
+            if(novo.containsKey(nomeFila)){
+                for(String nomeConsumo : novo.getOrDefault(nomeFila, new ConcurrentHashMap<>()).keySet()){
+                    for( RelacaoEntity relacaoEntity : novo.get(nomeFila).get(nomeConsumo)){
+                        processamento.get(relacaoEntity.getNome()).add(relacaoEntity);
+                        novo.get(nomeFila).get(nomeConsumo).remove(relacaoEntity);
+                    }
+                }
+            }
+            for( String nomeConsumo : processamento.keySet() ){
+                for(RelacaoEntity relacaoEntity : processamento.get(nomeConsumo)){
                     this.finaliza(nomeConsumo,relacaoEntity.getIdentificacaoMensagem());
                 }
             }
+        }catch(Exception ex ){
+            Logger.erro("Erro durante a remoção das mensagens na fila do sistema" , nomeFila , ex );
+            throw ex;
+        }
+        finally{
+            controleDaVoltaDosEstadosLock.unlock();
         }
     }
 }
