@@ -83,7 +83,14 @@ Os possíveis retornos para esse caso são:
  * 404 quando não é identificado esse registro na base
  * 200 quando confirmação ocorre com sucesso.
 
+### Limpando uma Fila
+Para realizar a operação de limpeza é necessário realizar um DELETE sem body na rota /fila/{nome_da_fila}
 
+* Exemplo: /fila/fila_de_teste
 
+Os retornor esperados são 
+* 200 para sucesso
+* 500 quando ocorre um erro no servidor
+* 400 caso o nome da fila for invalido
 
 
