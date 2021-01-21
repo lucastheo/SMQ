@@ -33,3 +33,17 @@ if __name__ == "__main__":
     resposta = mensageria.recebe_nao_bloqueante_commit("teste_smq_1", "quatro")
     print( "resposta da mensagem de forma não bloqueante com commit" , resposta.mensagem())
     
+
+    mensageria = smq_cliente.SmqCliente()
+    print("Enviando mensagem")
+    mensageria.envia("teste_smq", ["um", "dois" ], "teste 321")
+    mensageria.envia("teste_smq", ["um", "dois" ], "teste 321")
+    mensageria.envia("teste_smq", ["um", "dois" ], "teste 321")
+
+    mensageria.fila_limpar("teste_smq")
+    print("recebendo mensagem de forma bloqueante")
+    resposta = mensageria.recebe_nao_bloqueante_commit("teste_smq", "um")
+    if resposta.existe():
+        print("Mensagem encontrada, isso não está certo")
+    else:
+        print("Mensagem não encotrada, sucesso")

@@ -99,6 +99,26 @@ class SmqCliente:
                 for elemento in lista_elementos_grupo:
                     retorno.append( {"nome":elemento})
         return retorno
+
+    def fila_limpar( self , nome_fila ):
+        path = self.__fila_limpar_monta_path(nome_fila)
+        result = requests.delete(path)
+        return result.status_code == 200
+        
+
+    def __fila_limpar_monta_path( self, nome_fila ):
+        return f"{self._url}/fila/{nome_fila}"
+
+    def __fila_limpar( self , path  ):
+        count = 2
+        while count > 0:
+            result = requests.get(path)   
+            if result.status_code == 500:
+                time.sleep(1)
+                count -= 1
+            else:
+                count = 0
+        return result 
         
     class SmqClienteRetornoConsumo:
         __slots__=['_nome_grupo', '_id_mensagem', '_mensagem' , '_url' , '_ja_comitada']
