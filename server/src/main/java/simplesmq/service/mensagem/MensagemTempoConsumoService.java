@@ -34,14 +34,14 @@ public class MensagemTempoConsumoService {
     public void consumo(){
         Logger.info("Inicio do processo de limpeza das mensagens que passaram do tempo de consumo");
         List<UUID> relacaoEntityList = mensagemIdentidificacaoService.listaIdentificacaoMensagens();
-        MensagemEntity mensagemEntity;
+        MensagemEntity mensagemEntity = null;
         LocalDateTime localDateTime= LocalDateTime.now();
         for( UUID uuid : relacaoEntityList ){
             try {
                 mensagemEntity = mensagemConsultaService.por(uuid.toString());
                 compara(mensagemEntity,localDateTime, uuid);
             } catch (IOException e) {
-                Logger.erro("Erro no processo de limpeza das mensagens que passaram do tempo de consumo");
+                Logger.erro("Erro no processo de limpeza das mensagens que passaram do tempo de consumo" , mensagemEntity , e);
             }
 
         }

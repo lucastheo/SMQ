@@ -8,6 +8,7 @@ import simplesmq.domain.entity.RelacaoEntity;
 import simplesmq.repository.relacao.RelacaoStatusRepository;
 import simplesmq.service.mensagem.MensagemPersistenciaService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -72,5 +73,17 @@ public class RelacaoStatusService {
         relacaoStatusRepository.addConsumidores(mensagemEntity.getNomeFila(), relacaoEntity.getNome());
         relacaoStatusRepository.addRelacao(mensagemEntity.getNomeFila(), relacaoEntity.getNome(), relacaoEntity);
     }
+
+    public HashMap<String, HashMap<String,Integer>> consultaQuantidadeMensagensParaProcessar( ){
+        return relacaoStatusRepository.consultaQuantidadeMensagensParaProcessar();
+    }
+
+    public HashMap<String, HashMap<String,Integer>> consultaQuantidadeMensagensParaProcessar( String fila ){
+        return relacaoStatusRepository.consultaQuantidadeMensagensParaProcessar(fila);
+    }
+    public Integer consultaQuantidadeMensagensEmProcessamento(){
+        return relacaoStatusRepository.consultaQuantidadeMensagensEmProcessamento();
+    }
+
 }
 

@@ -5,6 +5,7 @@ import simplesmq.domain.entity.MensagemEntity;
 import simplesmq.domain.entity.RelacaoEntity;
 import simplesmq.util.Logger;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
@@ -208,5 +209,39 @@ public class RelacaoStatusRepository {
         finally{
             controleDaVoltaDosEstadosLock.unlock();
         }
+    }
+
+    public HashMap<String,HashMap<String,Integer>> consultaQuantidadeMensagensParaProcessar( ){
+        HashMap<String,HashMap<String,Integer>> retorno = new HashMap<>();
+        for( String fila : Collections.unmodifiableSet(novo.keySet())){
+            retorno.put(fila,new HashMap());
+            for( String consumidor : Collections.unmodifiableSet( novo.getOrDefault(fila, new ConcurrentHashMap<>() ).keySet() ) ) {
+                retorno.get(fila).put(
+                        consumidor ,
+                        novo.getOrDefault(fila,new ConcurrentHashMap<>()).getOrDefault(consumidor, new ConcurrentLinkedQueue<>()).size()
+                );
+            }
+        }
+        return retorno;
+    }
+
+    public HashMap<String,HashMap<String,Integer>> consultaQuantidadeMensagensParaProcessar( String fila ){
+        HashMap<String,HashMap<String,Integer>> retorno = new HashMap<>();
+        retorno.put(fila,new HashMap());
+        for( String consumidor : Collections.unmodifiableSet( novo.getOrDefault(fila, new ConcurrentHashMap<>() ).keySet() ) ) {
+            retorno.get(fila).put(
+                    consumidor ,
+                    novo.getOrDefault(fila,new ConcurrentHashMap<>()).getOrDefault(consumidor, new ConcurrentLinkedQueue<>()).size()
+            );
+        }
+        return retorno;
+    }
+
+    public Integer consultaQuantidadeMensagensEmProcessamento(){
+        int i = 0;
+        for( String consumidor : Collections.unmodifiableSet( processamento.keySet())){
+             i += processamento.getOrDefault(consumidor, new ConcurrentLinkedQueue<>()).size();
+        }
+        return i;
     }
 }
