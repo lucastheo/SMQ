@@ -1,8 +1,5 @@
 package simplesmq.util;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Data;
 import simplesmq.configuration.ArquivoConfiguration;
 
 import java.time.LocalDateTime;

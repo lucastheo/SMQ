@@ -21,18 +21,18 @@ public class FilaControllerTest {
     @Mock
     FilaService filaService;
 
-    public void setup() {
+    private void setup() {
         MockitoAnnotations.openMocks(this);;
     }
     @Test
-    void fialControllerOk(){
+    public void fialControllerOk(){
         setup();
         ResponseEntity response = filaControle.limpaFila("fila-teste");
         assertEquals(response.getStatusCode(), HttpStatus.OK);
     }
 
     @Test
-    void fialControllerValidacao(){
+    public void fialControllerValidacao(){
         setup();
         ResponseEntity response = filaControle.limpaFila(null);
         assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);

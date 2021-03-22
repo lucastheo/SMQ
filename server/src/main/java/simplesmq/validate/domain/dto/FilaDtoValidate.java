@@ -1,7 +1,6 @@
 package simplesmq.validate.domain.dto;
 
 import simplesmq.domain.dto.FilaDto;
-import simplesmq.domain.dto.MensagemDto;
 import simplesmq.exception.ValidacaoException;
 
 public class FilaDtoValidate {

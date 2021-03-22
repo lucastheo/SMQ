@@ -51,7 +51,7 @@ class MensagemControllerTest {
     @Mock
     ConsumoService consumoService;
 
-    public void setup() {
+    private void setup() {
         MockitoAnnotations.openMocks(this);;
     }
     @Test
