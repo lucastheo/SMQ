@@ -5,16 +5,11 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
-
-import java.util.List;
-
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class QuantidadeDeMensagensDio{
-    List<QuantidadeDeMensagemDetalhesFilaDio> fila;
+public class QuantidadeDeMensagemDetalhesConsultosDio {
+    String nome;
 
     Integer quantidade;
-
-    Integer emProcessamento;
 }

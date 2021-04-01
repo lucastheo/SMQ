@@ -118,7 +118,7 @@ public class MensagemController {
         try {
             consumoService.execute(consumo);
         } catch (NaoEncontradoException ex) {
-            Logger.erro("Erro ao tentar consumor a menagem" , consumo , ex );
+            Logger.warn("Erro ao tentar consumor a menagem" , consumo , ex );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorEoMapping.mapFrom(ex));
         }
         return ResponseEntity.status(HttpStatus.OK).build();
